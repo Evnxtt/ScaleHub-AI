@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ScaleHub-AI · Validator Kelayakan Manufaktur untuk Produk Riset</title>
+<meta name="description" content="ScaleHub-AI: micro-manufacturing modular berbasis IoT dan Computer Vision untuk menguji kelayakan manufaktur purwarupa riset sebelum scale-up.">
+<style>
+:root{--bg:#F1F4F6;--panel:#fff;--ink:#0F1B26;--mut:#52616F;--line:#D5DDE3;--teal:#0A8F7F;--teal2:#067064;--yel:#F2C200;--red:#C93B3B;--belt:#26323D;--soft:#E4EBEF;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C141B;--panel:#142029;--ink:#E8EEF2;--mut:#9AABB8;--line:#263641;--teal:#2CC9B3;--teal2:#5FE0CC;--red:#FF7A7A;--belt:#0A1117;--soft:#1B2A35;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0C141B;--panel:#142029;--ink:#E8EEF2;--mut:#9AABB8;--line:#263641;--teal:#2CC9B3;--teal2:#5FE0CC;--red:#FF7A7A;--belt:#0A1117;--soft:#1B2A35;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+h1,h2,h3{line-height:1.12;letter-spacing:-.025em;margin:0}
+h1{font-size:clamp(2.3rem,6vw,4.4rem);font-weight:800;max-width:17ch}
+h2{font-size:clamp(1.7rem,3.4vw,2.6rem);font-weight:800;max-width:22ch}
+h3{font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+p{margin:0}
+.lead{font-size:1.15rem;color:var(--mut);max-width:62ch}
+section{padding:88px 0}
+.sec-h{display:grid;gap:14px;margin-bottom:44px}
+.hazard{height:10px;background:repeating-linear-gradient(-45deg,var(--yel) 0 14px,var(--belt) 14px 28px)}
+/* header */
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.nav{display:flex;align-items:center;gap:20px;height:64px}
+.brand{font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+.brand i{width:22px;height:22px;border-radius:5px;background:var(--belt);position:relative;display:inline-block}
+.brand i::after{content:"";position:absolute;inset:6px;border-radius:2px;background:var(--yel)}
+.links{display:flex;gap:4px;margin-left:auto}
+.links a{text-decoration:none;font-size:.92rem;color:var(--mut);padding:8px 11px;border-radius:8px}
+.links a:hover{color:var(--ink);background:var(--soft)}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:700;font-size:.95rem;text-decoration:none;border:2px solid var(--ink);background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:10px;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink)}
+.btn:hover{transform:translateY(-1px)}
+.icon{width:40px;height:40px;padding:0;justify-content:center;background:transparent;color:var(--ink);border-color:var(--line)}
+#menu{display:none}
+/* hero */
+.hero{padding:72px 0 0}
+.hero .lead{margin:22px 0 30px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.sim{margin-top:56px;background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.sim-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding:16px 22px;border-bottom:1px solid var(--line);font-size:.9rem}
+.sim-top b{font-variant-numeric:tabular-nums;font-size:1.25rem;display:block;line-height:1.2}
+.sim-top span{color:var(--mut)}
+.sim svg{display:block;width:100%;height:auto;background:var(--belt)}
+.sim small{display:block;padding:10px 22px;color:var(--mut);font-size:.8rem;border-top:1px solid var(--line)}
+/* masalah + TKT */
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start}
+.facts{display:grid;gap:18px;margin-top:26px}
+.facts p{padding-left:16px;border-left:3px solid var(--yel);color:var(--mut)}
+.facts b{color:var(--ink)}
+.tkt{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px}
+.tkt-row{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;margin:22px 0 8px}
+.tkt-row span{height:44px;border-radius:5px;background:var(--soft);display:grid;place-items:center;font-size:.8rem;font-weight:700;color:var(--mut)}
+.tkt-row .now{background:var(--belt);color:#fff}
+.tkt-row .goal{background:var(--teal);color:#fff}
+.tkt-key{display:flex;gap:18px;font-size:.85rem;color:var(--mut);flex-wrap:wrap}
+.tkt-key i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+/* solusi */
+.pillars{border-top:2px solid var(--ink)}
+.pillar{display:grid;grid-template-columns:280px 1fr;gap:32px;padding:30px 0;border-bottom:1px solid var(--line)}
+.pillar p{color:var(--mut);max-width:70ch}
+.pillar ul{margin:12px 0 0;padding-left:18px;color:var(--mut)}
+/* alur */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:0;counter-reset:s}
+.steps li{position:relative;padding:0 18px 0 0;counter-increment:s}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--bg);font-weight:800;margin-bottom:16px;position:relative;z-index:1}
+.steps li::after{content:"";position:absolute;top:18px;left:38px;right:0;height:2px;background:repeating-linear-gradient(90deg,var(--mut) 0 6px,transparent 6px 12px)}
+.steps li:last-child::after{display:none}
+.steps h3{margin-bottom:6px;font-size:1rem}
+.steps p{font-size:.92rem;color:var(--mut)}
+/* demo skor */
+.demo{display:grid;grid-template-columns:1fr 340px;gap:40px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:32px}
+.sl{margin-bottom:22px}
+.sl label{display:flex;justify-content:space-between;font-weight:600;margin-bottom:6px}
+.sl output{font-variant-numeric:tabular-nums;color:var(--teal2)}
+.sl small{color:var(--mut);display:block;margin-top:2px}
+input[type=range]{width:100%;accent-color:var(--teal);height:28px}
+.gauge{display:grid;place-items:center;text-align:center;background:var(--soft);border-radius:14px;padding:26px}
+.gauge svg{width:210px;height:auto}
+.gauge strong{display:block;font-size:2.8rem;line-height:1;font-variant-numeric:tabular-nums}
+.gauge em{font-style:normal;font-weight:700;display:inline-block;margin-top:8px;padding:5px 14px;border-radius:99px;background:var(--belt);color:#fff}
+.gauge p{font-size:.82rem;color:var(--mut);margin-top:14px}
+/* target */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}
+.metrics div{padding:30px 24px;border-right:1px solid var(--line)}
+.metrics div:last-child{border:0}
+.metrics b{display:block;font-size:clamp(2.2rem,4vw,3.3rem);font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.metrics div>span{display:block;margin-top:10px;color:var(--mut);font-size:.92rem}
+/* mitra */
+.mitra{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.m{background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--teal);border-radius:14px;padding:26px}
+.m:nth-child(2){border-top-color:var(--yel)}
+.m:nth-child(3){border-top-color:var(--belt)}
+.m h3{margin-bottom:4px}
+.m .role{color:var(--teal2);font-weight:600;font-size:.9rem;margin-bottom:12px}
+.m p,.m li{color:var(--mut);font-size:.95rem}
+.m ul{padding-left:18px;margin:10px 0 0}
+.note{margin-top:22px;padding:16px 20px;border-left:4px solid var(--yel);background:var(--panel);border-radius:0 10px 10px 0;color:var(--mut);font-size:.93rem}
+/* roadmap */
+.tl{list-style:none;margin:0;padding:0;border-left:3px solid var(--ink)}
+.tl li{display:grid;grid-template-columns:170px 1fr 1fr;gap:10px 28px;padding:20px 0 20px 28px;position:relative;border-bottom:1px solid var(--line)}
+.tl li::before{content:"";position:absolute;left:-10px;top:27px;width:17px;height:17px;border-radius:50%;background:var(--bg);border:4px solid var(--ink)}
+.tl li.hit::before{border-color:var(--teal);background:var(--teal)}
+.tl time{font-weight:800}
+.tl p{color:var(--mut);font-size:.95rem}
+.tl .out{color:var(--ink);font-weight:600;font-size:.92rem}
+.tag{display:inline-block;margin-left:8px;font-size:.75rem;font-weight:700;background:var(--teal);color:#fff;border-radius:6px;padding:1px 8px;vertical-align:2px}
+/* bisnis, tim */
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.cols3 div,.team div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px}
+.cols3 p,.team p{color:var(--mut);font-size:.95rem;margin-top:6px}
+.team{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.team div{padding:20px}
+.team h3{font-size:1rem}
+.refs{columns:2;column-gap:44px;font-size:.88rem;color:var(--mut);padding-left:18px}
+.refs li{margin-bottom:10px;break-inside:avoid}
+footer{background:var(--belt);color:#E8EEF2;padding:48px 0 calc(40px + env(safe-area-inset-bottom,0px));margin-top:40px}
+footer p{color:#9AABB8;font-size:.9rem;max-width:70ch}
+footer b{font-size:1.2rem}
+@media(max-width:940px){
+ .links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 24px 16px}
+ .links.open{display:flex}#menu{display:inline-flex;margin-left:auto}.nav .theme{margin-left:0}
+ .two,.demo,.mitra,.cols3,.pillar{grid-template-columns:1fr}
+ .pillar{gap:8px}.steps{grid-template-columns:1fr;gap:26px}.steps li::after{display:none}
+ .metrics{grid-template-columns:1fr 1fr}.metrics div:nth-child(2){border-right:0}.metrics div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+ .team{grid-template-columns:1fr 1fr}.refs{columns:1}
+ .tl li{grid-template-columns:1fr}section{padding:64px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn:hover{transform:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+<a class="brand" href="#atas"><i></i>ScaleHub-AI</a>
+<nav class="links" id="links" aria-label="Navigasi utama">
+<a href="#masalah">Masalah</a><a href="#solusi">Solusi</a><a href="#alur">Alur</a><a href="#skor">Skor Kelayakan</a><a href="#mitra">Mitra</a><a href="#roadmap">Roadmap</a><a href="#tim">Tim</a>
+</nav>
+<button class="btn icon theme" id="theme" aria-label="Ganti tema terang atau gelap" title="Ganti tema">◐</button>
+<button class="btn icon" id="menu" aria-label="Buka menu" aria-expanded="false">☰</button>
+</div></header>
+
+<main id="atas">
+<div class="wrap hero">
+<h1>Uji kelayakan manufaktur sebelum membangun pilot-plant</h1>
+<p class="lead">ScaleHub-AI adalah lini produksi mikro modular berukuran desktop dengan sensor IoT dan kamera AI. Purwarupa peneliti atau startup dijalankan seperti produksi massal, cacat terdeteksi sejak dini, dan hasilnya menjadi Skor Kelayakan Manufaktur yang objektif.</p>
+<div class="cta"><a class="btn" href="#skor">Coba simulasi skor</a><a class="btn alt" href="#roadmap">Lihat roadmap</a></div>
+
+<div class="sim" aria-label="Simulasi ilustrasi lini inspeksi">
+<div class="sim-top">
+<div><b id="s-n">0</b><span>item diperiksa</span></div>
+<div><b id="s-d">0</b><span>cacat terdeteksi</span></div>
+<div><b id="s-y">–</b><span>tingkat lolos</span></div>
+<div><b>&lt;100 ms</b><span>target latensi inferensi per item</span></div>
+</div>
+<svg viewBox="0 0 1000 250" role="img" aria-label="Item bergerak di konveyor melewati kamera AI">
+<rect x="0" y="150" width="1000" height="46" fill="#3A4856"/>
+<g id="belt" stroke="#59697A" stroke-width="3"></g>
+<rect x="0" y="196" width="1000" height="8" fill="#F2C200"/>
+<g transform="translate(455,24)"><rect width="110" height="46" rx="8" fill="#0A8F7F"/><circle cx="55" cy="23" r="13" fill="#0F1B26" stroke="#fff" stroke-width="3"/><circle cx="55" cy="23" r="4" fill="#2CC9B3"/><path d="M30 46 L10 126 M80 46 L100 126" stroke="#2CC9B3" stroke-width="2" stroke-dasharray="5 5" opacity=".7"/></g>
+<g id="items"></g>
+<text x="24" y="232" fill="#9AABB8" font-size="14" font-family="system-ui,sans-serif">Konveyor cerdas</text>
+<text x="976" y="232" fill="#9AABB8" font-size="14" text-anchor="end" font-family="system-ui,sans-serif">Sensor IoT: energi · cycle-time</text>
+</svg>
+<small>Simulasi ilustrasi untuk menggambarkan alur kerja; angka yang tampil bukan hasil pengujian. Target kinerja resmi ada pada bagian Target Kinerja.</small>
+</div>
+</div>
+
+<section id="masalah"><div class="wrap two">
+<div>
+<div class="sec-h"><h2>Purwarupa riset sering gagal di antara laboratorium dan pabrik</h2></div>
+<p class="lead">Industri besar sulit yakin bahwa purwarupa startup tetap efisien dan andal ketika diperbesar skalanya. Validasi manufaktur biasanya butuh pilot-plant yang mahal, sehingga transfer teknologi tertahan.</p>
+<div class="facts">
+<p><b>Valley of Death.</b> Kesenjangan antara riset dan komersialisasi ini terdokumentasi dalam literatur inovasi produk.</p>
+<p><b>Kesiapan teknologi tidak cukup.</b> Kesiapan manufaktur perlu dinilai tersendiri, misalnya dengan kerangka Manufacturing Readiness Level.</p>
+<p><b>Celah alat.</b> Deteksi cacat berbasis machine vision dan deep learning sudah terbukti cepat, murah, dan akurat (86–99% pada berbagai kasus yang ditinjau), tetapi belum tersedia sebagai alat validasi skala mikro untuk purwarupa riset.</p>
+</div>
+</div>
+<div class="tkt">
+<h3>Tingkat Kesiapan Teknologi</h3>
+<p style="color:var(--mut);font-size:.93rem;margin-top:6px">Selama program, TKT naik dari 4 ke 5–6 (skala sembilan tingkat).</p>
+<div class="tkt-row" aria-label="Skala TKT 1 sampai 9"><span>1</span><span>2</span><span>3</span><span class="now">4</span><span class="goal">5</span><span class="goal">6</span><span>7</span><span>8</span><span>9</span></div>
+<div class="tkt-key"><span><i style="background:var(--belt)"></i>Awal: komponen divalidasi di laboratorium</span><span><i style="background:var(--teal)"></i>Target: integrasi subsistem dan validasi di lingkungan relevan</span></div>
+</div>
+</div></section>
+
+<div class="hazard" aria-hidden="true"></div>
+
+<section id="solusi"><div class="wrap">
+<div class="sec-h"><h2>Satu lini mikro, tiga kemampuan yang bekerja bersama</h2><p class="lead">ScaleHub-AI mengadopsi konsep microfactory: sistem produksi dikecilkan agar sepadan dengan ukuran produk, sehingga diharapkan menghemat energi, material, dan investasi awal.</p></div>
+<div class="pillars">
+<div class="pillar"><h3>Konveyor cerdas dan modul processing plug-and-play</h3><div><p>Modul dapat dibongkar-pasang sesuai produk uji, baik agrikultur, material, maupun komponen.</p></div></div>
+<div class="pillar"><h3>Sensor IoT dan dashboard analitik</h3><div><p>Memantau konsumsi energi dan cycle-time secara real-time, lalu menghitung Skor Kelayakan Manufaktur otomatis dari:</p><ul><li>yield</li><li>energi per unit</li><li>cycle-time</li><li>stabilitas proses</li></ul></div></div>
+<div class="pillar"><h3>Kamera AI untuk deteksi cacat</h3><div><p>Model deteksi objek satu tahap real-time, mengadaptasi arsitektur kontrol kualitas seperti YOLO, mendeteksi deviasi atau cacat tanpa intervensi manusia.</p></div></div>
+</div>
+<p class="note">Dibanding pilot-plant, pendekatan ini lebih murah dan cepat. Dibanding inspeksi manual, hasilnya lebih objektif dan bisa langsung menjadi portofolio untuk business matching.</p>
+</div></section>
+
+<section id="alur" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap">
+<div class="sec-h"><h2>Dari purwarupa ke skor, dalam lima langkah</h2></div>
+<ol class="steps">
+<li><h3>Purwarupa masuk</h3><p>Peneliti atau startup menyerahkan produk uji.</p></li>
+<li><h3>Dijalankan di lini mikro</h3><p>Modul processing dirakit sesuai jenis produk, lalu produksi massal disimulasikan.</p></li>
+<li><h3>Kamera dan sensor merekam</h3><p>Cacat terdeteksi dini, energi dan cycle-time terukur real-time.</p></li>
+<li><h3>Skor dihitung</h3><p>Dashboard menampilkan Skor Kelayakan Manufaktur otomatis.</p></li>
+<li><h3>Dipakai untuk matching</h3><p>Data objektif menjadi bahan business matching dengan industri.</p></li>
+</ol>
+</div></section>
+
+<section id="skor"><div class="wrap">
+<div class="sec-h"><h2>Rasakan cara kerja Skor Kelayakan</h2><p class="lead">Geser empat indikator untuk melihat bagaimana skor berubah. Ini ilustrasi: bobot dan ambang batas sebenarnya akan dikalibrasi pada minimal dua jenis produk uji.</p></div>
+<div class="demo">
+<div>
+<div class="sl"><label for="r1">Yield <output id="o1">80</output></label><input id="r1" type="range" min="0" max="100" value="80"><small>Proporsi item yang lolos tanpa cacat</small></div>
+<div class="sl"><label for="r2">Efisiensi energi per unit <output id="o2">70</output></label><input id="r2" type="range" min="0" max="100" value="70"><small>Makin tinggi, makin hemat energi per unit</small></div>
+<div class="sl"><label for="r3">Cycle-time <output id="o3">75</output></label><input id="r3" type="range" min="0" max="100" value="75"><small>Makin tinggi, makin sesuai target waktu proses</small></div>
+<div class="sl" style="margin:0"><label for="r4">Stabilitas proses <output id="o4">65</output></label><input id="r4" type="range" min="0" max="100" value="65"><small>Konsistensi hasil dari waktu ke waktu</small></div>
+</div>
+<div class="gauge" aria-live="polite">
+<svg viewBox="0 0 200 120"><path d="M20 105 A80 80 0 0 1 180 105" fill="none" stroke="var(--line)" stroke-width="16" stroke-linecap="round"/><path id="arc" d="M20 105 A80 80 0 0 1 180 105" fill="none" stroke="var(--teal)" stroke-width="16" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/></svg>
+<strong id="score">72</strong><em id="verdict">Cukup layak</em>
+<p>Ilustrasi dengan bobot sama rata. Bukan hasil kalibrasi.</p>
+</div>
+</div>
+</div></section>
+
+<section id="target" style="padding-top:0"><div class="wrap">
+<div class="sec-h"><h2>Target kinerja program</h2></div>
+<div class="metrics">
+<div><b><span data-to="90" data-pre="≥">0</span>%</b><span>akurasi deteksi cacat</span></div>
+<div><b><span data-to="100" data-pre="&lt;">0</span> ms</b><span>latensi inferensi per item</span></div>
+<div><b><span data-to="5" data-pre="≤">0</span>%</b><span>galat pengukuran cycle-time</span></div>
+<div><b><span data-to="2" data-pre="≥">0</span></b><span>jenis produk uji untuk kalibrasi skor</span></div>
+</div>
+</div></section>
+
+<section id="mitra" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap">
+<div class="sec-h"><h2>Siapa yang dilayani ScaleHub-AI</h2><p class="lead">Pengguna utama adalah platform open innovation, peneliti kampus, dan startup deeptech. Industri besar menjadi penerima manfaat akhir.</p></div>
+<div class="mitra">
+<div class="m"><h3>Leave a Nest Malaysia Sdn. Bhd.</h3><div class="role">Calon problem owner dan pengguna awal</div><p>Platform open innovation yang menghubungkan teknologi dengan industri.</p><ul><li>Menyampaikan problem lewat Problem Owner Clinic</li><li>Meninjau hasil uji dan Skor Kelayakan</li><li>Membuka business matching dan pilot</li></ul></div>
+<div class="m"><h3>Peneliti kampus dan startup deeptech</h3><div class="role">Calon pengguna</div><p>Pemilik purwarupa yang perlu bukti kelayakan sebelum scale-up.</p><ul><li>Diwawancarai pada tahap validasi masalah (minimal 10 calon pengguna)</li><li>Menyerahkan minimal 2 jenis produk uji</li><li>Memakai skor sebagai portofolio</li></ul></div>
+<div class="m"><h3>Industri besar</h3><div class="role">Adopter dan penerima manfaat akhir</div><p>Butuh data objektif untuk menilai teknologi yang akan diadopsi.</p><ul><li>Meninjau data kelayakan manufaktur</li><li>Menjajaki lisensi dan pilot</li></ul></div>
+</div>
+<p class="note">Status kemitraan: Leave a Nest masih berstatus calon mitra. Surat dukungan formal belum ada dan sedang dijajaki melalui Industry briefing dan Problem Owner Clinic.</p>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+<div class="sec-h"><h2>Roadmap November 2026 sampai Oktober 2027</h2></div>
+<ol class="tl">
+<li><time>Nov 2026</time><p>Kick-off, bootcamp, Problem Owner Clinic; wawancara ≥10 calon pengguna; finalisasi spesifikasi.</p><p class="out">Problem validation report</p></li>
+<li><time>Des 2026</time><p>Desain dan fabrikasi konveyor serta modul processing; pengumpulan dataset citra.</p><p class="out">Rangka mekanik v1</p></li>
+<li><time>Jan 2027</time><p>Pelatihan model CV; pemasangan sensor IoT; dashboard v1.</p><p class="out">Model CV, dashboard v1</p></li>
+<li class="hit"><time>Feb 2027 <span class="tag">TKT 5</span></time><p>Integrasi mekanik, AI, dan IoT; uji fungsional.</p><p class="out">Sistem terintegrasi</p></li>
+<li class="hit"><time>Mar 2027 <span class="tag">TKT 6</span></time><p>Validasi ≥2 jenis produk uji dari calon pengguna; kalibrasi skor; BMC dan strategi KI.</p><p class="out">Laporan validasi</p></li>
+<li><time>Apr 2027</time><p>Demo Day, business matching, laporan akhir.</p><p class="out">Prototipe tervalidasi</p></li>
+<li><time>Mei–Okt 2027</time><p>Lanjutan: pilot dengan mitra, inkubasi, penjajakan lisensi.</p><p class="out">Pilot / LOI</p></li>
+</ol>
+</div></section>
+
+<section id="bisnis" style="padding-top:0"><div class="wrap">
+<div class="sec-h"><h2>Nilai komersial</h2></div>
+<div class="cols3">
+<div><h3>Validation-as-a-service</h3><p>Layanan uji kelayakan manufaktur berbayar untuk purwarupa riset.</p></div>
+<div><h3>Penjualan atau lisensi unit modular</h3><p>Unit plug-and-play untuk institusi yang ingin memvalidasi sendiri.</p></div>
+<div><h3>Modul processing per jenis produk</h3><p>Modul tambahan yang menyesuaikan lini dengan produk uji.</p></div>
+</div>
+</div></section>
+
+<section id="tim" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap">
+<div class="sec-h"><h2>Tim pelaksana</h2><p class="lead">Lima orang dari Universitas Padjadjaran, dipimpin seorang dosen. Nama anggota akan diisi setelah data final.</p></div>
+<div class="team">
+<div><h3>Ketua tim</h3><p>Penanggung jawab program, koordinasi, pelaporan, dan anggaran.</p></div>
+<div><h3>Koordinator teknis</h3><p>Konveyor, modul processing, model CV, sensor IoT, dan dashboard.</p></div>
+<div><h3>Bisnis dan hilirisasi</h3><p>Business Model Canvas, skema layanan atau lisensi, KI, dan business matching.</p></div>
+<div><h3>Validasi pengguna</h3><p>Wawancara kebutuhan dan uji validasi produk bersama calon pengguna.</p></div>
+<div><h3>Operasional dan regulasi</h3><p>Jadwal, dokumentasi, K3, standar, dan logbook.</p></div>
+</div>
+<p class="note">Monitoring: rapat mingguan, papan Kanban dan logbook teknis, tinjauan milestone bulanan bersama mentor, gate review internal, dan pemantauan anggaran bulanan.</p>
+</div></section>
+
+<section id="pustaka"><div class="wrap">
+<div class="sec-h"><h2>Dasar ilmiah</h2></div>
+<ol class="refs">
+<li>Markham, S. K., et al. (2010). The valley of death as context for role theory in product innovation. <i>Journal of Product Innovation Management</i>, 27(3), 402–417.</li>
+<li>Okazaki, Y., Mishima, N., &amp; Ashida, K. (2004). Microfactory—Concept, history, and developments. <i>Journal of Manufacturing Science and Engineering</i>, 126(4), 837–844.</li>
+<li>Yang, J., et al. (2020). Using deep learning to detect defects in manufacturing: A comprehensive survey and current challenges. <i>Materials</i>, 13(24), 5755.</li>
+<li>Redmon, J., et al. (2016). You only look once: Unified, real-time object detection. <i>CVPR</i>, 779–788.</li>
+<li>Zhong, R. Y., et al. (2017). Intelligent manufacturing in the context of Industry 4.0: A review. <i>Engineering</i>, 3(5), 616–630.</li>
+<li>Office of the Secretary of Defense. (2015). <i>Manufacturing Readiness Level (MRL) Deskbook</i>.</li>
+</ol>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+<b>ScaleHub-AI</b>
+<p style="margin-top:10px">Micro-manufacturing modular berbasis IoT dan Computer Vision sebagai validator kelayakan manufaktur untuk menekan risiko kegagalan scale-up produk riset.</p>
+<p style="margin-top:14px">Universitas Padjadjaran · Hackathon Deeptech 2026 · Track 03 Smarter &amp; Sustainable Industry · Hilirisasi dan Industrialisasi</p>
+</div></footer>
+
+<script>
+(function(){
+var $=function(s){return document.querySelector(s)},rm=matchMedia("(prefers-reduced-motion: reduce)").matches,root=document.documentElement;
+/* tema */
+try{var t=localStorage.getItem("sh-theme");if(t)root.setAttribute("data-theme",t)}catch(e){}
+$("#theme").onclick=function(){var dark=root.getAttribute("data-theme")==="dark"||(!root.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme: dark)").matches);var n=dark?"light":"dark";root.setAttribute("data-theme",n);try{localStorage.setItem("sh-theme",n)}catch(e){}};
+/* menu */
+var menu=$("#menu"),links=$("#links");
+menu.onclick=function(){var o=links.classList.toggle("open");menu.setAttribute("aria-expanded",o)};
+links.onclick=function(e){if(e.target.tagName==="A"){links.classList.remove("open");menu.setAttribute("aria-expanded","false")}};
+/* simulasi konveyor */
+var NS="http://www.w3.org/2000/svg",items=$("#items"),belt=$("#belt"),list=[],n=0,d=0,last=0,spawn=0;
+for(var x=0;x<1000;x+=40){var l=document.createElementNS(NS,"line");l.setAttribute("x1",x);l.setAttribute("x2",x);l.setAttribute("y1",153);l.setAttribute("y2",193);belt.appendChild(l)}
+function mk(x){var g=document.createElementNS(NS,"g"),r=document.createElementNS(NS,"rect"),b=document.createElementNS(NS,"rect"),t=document.createElementNS(NS,"text");
+r.setAttribute("width",54);r.setAttribute("height",54);r.setAttribute("rx",9);r.setAttribute("y",-54);r.setAttribute("fill","#DDE6EC");
+b.setAttribute("x",-6);b.setAttribute("y",-60);b.setAttribute("width",66);b.setAttribute("height",66);b.setAttribute("rx",6);b.setAttribute("fill","none");b.setAttribute("stroke-width",3);b.style.display="none";
+t.setAttribute("y",-70);t.setAttribute("font-size",14);t.setAttribute("font-weight",700);t.setAttribute("font-family","system-ui,sans-serif");t.style.display="none";
+g.appendChild(r);g.appendChild(b);g.appendChild(t);g.setAttribute("transform","translate("+x+",150)");items.appendChild(g);
+return{g:g,r:r,b:b,t:t,x:x,done:false,bad:Math.random()<.2}}
+function stats(){$("#s-n").textContent=n;$("#s-d").textContent=d;$("#s-y").textContent=n?Math.round((n-d)/n*100)+"%":"–"}
+function scan(o){o.done=true;n++;if(o.bad)d++;var c=o.bad?"#FF7A7A":"#2CC9B3";
+o.b.style.display="";o.b.setAttribute("stroke",c);o.t.style.display="";o.t.setAttribute("fill",c);o.t.textContent=o.bad?"Cacat":"OK";
+if(o.bad){o.r.setAttribute("fill","#C93B3B")}stats()}
+function frame(ts){var dt=last?Math.min((ts-last)/1000,.1):0;last=ts;spawn-=dt;
+if(spawn<=0){list.push(mk(-70));spawn=1.5}
+for(var i=list.length-1;i>=0;i--){var o=list[i];o.x+=95*dt;o.g.setAttribute("transform","translate("+o.x+",150)");
+if(!o.done&&o.x>=478)scan(o);if(o.x>1040){items.removeChild(o.g);list.splice(i,1)}}
+requestAnimationFrame(frame)}
+if(rm){for(var k=0;k<5;k++){var o=mk(120+k*180);o.bad=k===2;if(o.x>420&&o.x<600||true){o.done=true;o.b.style.display="";o.t.style.display="";var c=o.bad?"#FF7A7A":"#2CC9B3";o.b.setAttribute("stroke",c);o.t.setAttribute("fill",c);o.t.textContent=o.bad?"Cacat":"OK";if(o.bad)o.r.setAttribute("fill","#C93B3B")}}
+$("#s-n").textContent=5;$("#s-d").textContent=1;$("#s-y").textContent="80%"}else requestAnimationFrame(frame);
+/* demo skor */
+var arc=$("#arc");
+function upd(){var s=0;for(var i=1;i<=4;i++){var v=+$("#r"+i).value;$("#o"+i).textContent=v;s+=v}
+s=Math.round(s/4);$("#score").textContent=s;arc.setAttribute("stroke-dasharray",s+" 100");
+var v=s>=80?["Layak",""]:s>=60?["Cukup layak",""]:["Perlu perbaikan",""];$("#verdict").textContent=v[0];
+arc.setAttribute("stroke",s>=80?"var(--teal)":s>=60?"#D9A400":"var(--red)")}
+for(var i=1;i<=4;i++)$("#r"+i).addEventListener("input",upd);upd();
+/* hitung naik */
+var cs=document.querySelectorAll("[data-to]");
+function run(el){var to=+el.dataset.to,pre=el.dataset.pre||"",s=null;
+function st(ts){if(!s)s=ts;var p=Math.min((ts-s)/1100,1),e=1-Math.pow(1-p,3);el.innerHTML=pre+Math.round(to*e);if(p<1)requestAnimationFrame(st)}
+requestAnimationFrame(st)}
+function fin(el){el.innerHTML=(el.dataset.pre||"")+el.dataset.to}
+if(rm||!("IntersectionObserver"in window)){[].forEach.call(cs,fin)}else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){run(e.target);io.unobserve(e.target)}})},{threshold:.6});[].forEach.call(cs,function(el){io.observe(el)})}
+})();
+</script>
+</body>
+</html>
